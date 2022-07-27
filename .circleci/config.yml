@@ -379,7 +379,7 @@ jobs:
 #             fi
             
 
-workflows:
+workflow:
   default:
     jobs:
       - build-frontend
