@@ -318,93 +318,57 @@ jobs:
       - destroy-environment
       - revert-migrations
 
-  # deploy-frontend:
-  #   docker:
-  #     # Docker image here that supports AWS CLI
-  #     # - image: cimg/base:stable
-  #     - image: "circleci/node:13.8.0"
-  #   steps:
-  #     # Checkout code from git
-  #     - checkout
-
-  #     - add_ssh_keys:
-  #         fingerprints:
-  #           - "70:e9:cd:8c:df:6e:4e:6f:d3:83:06:0a:0c:90:7e:9f"
-  #     - attach_workspace:
-  #         at: ~/
-
-  #     - install_nodejs
-  #     - install_awscli
-  #     - install_ansible
-
-  #     - run:
-  #         name: Get backend url
-  #         command: |
-  #           # your code here
-  #     - run:
-  #         name: Get backend url
-  #         command: |
-  #           # your code here
-  #           export BACKEND_IP-$(aws ec2 describe-instances \
-  #           --query 'Reservations[*].Instances[*].PublicIpAddress' \
-  #           --filter Name-tag:Name,Value=backend-${CIRCLE_WORKFLOW_ID:0:7} \
-  #           --output text
-  #           )
-  #           export API_URL="http://${BACKEND_IP}:3030"
-  #           echo "API_URL = ${API_URL}"
-  #           echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
-  #           cat frontend/.env
-
-  #     - run:
-  #         name: Deploy frontend objects
-  #         command: |
-  #           cd frontend 
-  #           sudo npm install -g npm@latest
-  #           rm -rf node_modules
-  #           npm install
-  #           npm run build
-  #           aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-  #     # Here's where you will add some code to rollback on failure      
-  #     - destroy-environment
-  #     - revert-migrations
-
   deploy-frontend:
     docker:
-      - image: "circleci/node:13.8.0"
+      # Docker image here that supports AWS CLI
+      - image: cimg/base:stable
+      # - image: "circleci/node:13.8.0"
     steps:
+      # Checkout code from git
       - checkout
-      - aws-cli/setup
+
+      - add_ssh_keys:
+          fingerprints:
+            - "70:e9:cd:8c:df:6e:4e:6f:d3:83:06:0a:0c:90:7e:9f"
       - attach_workspace:
           at: ~/
-      - restore_cache:
-          keys:
-            - frontend-build
-      - run:
-          name: Install dependencies
-          command: |
-            cd frontend
-            npm install
+
+      - install_nodejs
+      - install_awscli
+      - install_ansible
+
       - run:
           name: Get backend url
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              # --filters "Name=tag:udapeople,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --output text)
+            # your code here
+      - run:
+          name: Get backend url
+          command: |
+            # your code here
+            export BACKEND_IP-$(aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --filter Name-tag:Name,Value=backend-${CIRCLE_WORKFLOW_ID:0:7} \
+            --output text
+            )
             export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
+            echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
             cat frontend/.env
+
       - run:
           name: Deploy frontend objects
           command: |
-            cd frontend
+            cd frontend 
+            sudo npm install -g npm@latest
+            rm -rf node_modules
             npm install
             npm run build
-            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-            aws s3 cp dist s3://udapeople-007j287dhjppmz437 --recursive
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+      # Here's where you will add some code to rollback on failure      
       - destroy-environment
       - revert-migrations
+
+  
 
 
                     
