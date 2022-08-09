@@ -284,7 +284,7 @@ jobs:
       - image: cimg/node:18.4.0
     steps:
       - checkout
-      # - aws-cli/setup
+      - aws-cli/setup
       - attach_workspace:
           at: ~/
       - restore_cache:
@@ -474,7 +474,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "49:96:01:11:4e:df:ff:9c:9c:f3:24:c3:4a:da:3f:3d"
+            - "70:e9:cd:8c:df:6e:4e:6f:d3:83:06:0a:0c:90:7e:9f"
       - attach_workspace:
           at: ~/
       - restore_cache:
